@@ -1,0 +1,13 @@
+policies:
+- type: conventionalCommit
+  spec:
+    types:
+    - chore
+    - docs
+    - perf
+    - refactor
+    - style
+    - test
+    scopes:
+    - git
+    - semver
