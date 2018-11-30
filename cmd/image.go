@@ -13,5 +13,5 @@ var imageCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(imageCmd)
-	imageCmd.AddCommand(containerTagCmd)
+	imageCmd.AddCommand(containerTagCmd, pushableCmd)
 }
