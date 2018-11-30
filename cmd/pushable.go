@@ -8,6 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	negate bool
+)
+
 // pushableCmd represents the pushable command
 var pushableCmd = &cobra.Command{
 	Use:   "pushable",
@@ -20,15 +24,28 @@ var pushableCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if m.Git.IsClean && m.Git.Branch == "master" {
-			fmt.Printf("true")
+			if negate {
+				fmt.Printf("false")
+			} else {
+				fmt.Printf("true")
+			}
 		} else if m.Git.IsClean && m.Git.IsTag {
-			fmt.Printf("true")
+			if negate {
+				fmt.Printf("false")
+			} else {
+				fmt.Printf("true")
+			}
 		} else {
-			fmt.Printf("false")
+			if negate {
+				fmt.Printf("true")
+			} else {
+				fmt.Printf("false")
+			}
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(pushableCmd)
+	pushableCmd.Flags().BoolVarP(&negate, "negate", "n", false, "negate the printed boolean")
 }
