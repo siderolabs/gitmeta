@@ -10,4 +10,5 @@ policies:
     - test
     scopes:
     - git
+    - image
     - semver
