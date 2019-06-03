@@ -5,14 +5,18 @@ import (
 	"path"
 	"path/filepath"
 
+	billy "gopkg.in/src-d/go-billy.v4"
+	"gopkg.in/src-d/go-billy.v4/memfs"
 	git "gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"gopkg.in/src-d/go-git.v4/storage/memory"
 )
 
 // Git is a helper for git.
 type Git struct {
-	repo *git.Repository
+	Filesystem billy.Filesystem
+	repo       *git.Repository
 }
 
 func findDotGit(name string) (string, error) {
@@ -34,6 +38,26 @@ func NewGit() (g *Git, err error) {
 		return
 	}
 	g = &Git{repo: repo}
+
+	return g, err
+}
+
+// NewGitFromClone instantiates and returns a Git struct.
+func NewGitFromClone(url string, ref plumbing.ReferenceName) (g *Git, err error) {
+	fs := memfs.New()
+	repo, err := git.Clone(memory.NewStorage(), fs, &git.CloneOptions{
+		URL:           url,
+		Progress:      os.Stdout,
+		ReferenceName: "refs/heads/" + ref,
+		SingleBranch:  true,
+		NoCheckout:    false,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	g = &Git{Filesystem: fs, repo: repo}
 
 	return g, err
 }

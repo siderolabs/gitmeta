@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/talos-systems/gitmeta/pkg/git"
 	"github.com/talos-systems/gitmeta/pkg/metadata"
 	"github.com/spf13/cobra"
 )
@@ -14,7 +15,12 @@ var gitTagCmd = &cobra.Command{
 	Short: "Prints the git tag",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		m, err := metadata.NewMetadata()
+		git, err := git.NewGit()
+		if err != nil {
+			fmt.Printf("%v", err)
+			os.Exit(1)
+		}
+		m, err := metadata.NewMetadata(git)
 		if err != nil {
 			fmt.Printf("%v", err)
 			os.Exit(1)
@@ -29,7 +35,12 @@ var containerTagCmd = &cobra.Command{
 	Short: "Prints the container image tag",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		m, err := metadata.NewMetadata()
+		git, err := git.NewGit()
+		if err != nil {
+			fmt.Printf("%v", err)
+			os.Exit(1)
+		}
+		m, err := metadata.NewMetadata(git)
 		if err != nil {
 			fmt.Printf("%v", err)
 			os.Exit(1)
