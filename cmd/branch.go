@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/autonomy/gitmeta/internal/metadata"
+	"github.com/talos-systems/gitmeta/pkg/metadata"
 	"github.com/spf13/cobra"
 )
 

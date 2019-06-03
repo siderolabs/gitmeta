@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/autonomy/gitmeta/internal/git"
+	"github.com/talos-systems/gitmeta/pkg/git"
 )
 
 // Metadata contains metadata.

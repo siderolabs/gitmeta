@@ -1,6 +1,6 @@
 package main
 
-import "github.com/autonomy/gitmeta/cmd"
+import "github.com/talos-systems/gitmeta/cmd"
 
 func main() {
 	cmd.Execute()
