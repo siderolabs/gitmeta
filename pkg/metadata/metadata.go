@@ -9,6 +9,8 @@ import (
 
 // Metadata contains metadata.
 type Metadata struct {
+	git *git.Git
+
 	Container *Container
 	Git       *Git
 	Version   *Version
@@ -50,11 +52,10 @@ type Version struct {
 }
 
 // NewMetadata initializes and returns a Metadata struct.
-func NewMetadata() (m *Metadata, err error) {
-	m = &Metadata{}
+func NewMetadata(git *git.Git) (m *Metadata, err error) {
+	m = &Metadata{git: git}
 
 	m.Built = time.Now().UTC().Format(time.RFC1123)
-
 	if err := addMetadataForGit(m); err != nil {
 		return nil, err
 	}
@@ -110,28 +111,24 @@ func addMetadataForContainer(m *Metadata) error {
 	return nil
 }
 
-func addMetadataForGit(m *Metadata) error {
-	g, err := git.NewGit()
-	if err != nil {
-		return err
-	}
+func addMetadataForGit(m *Metadata) (err error) {
 	m.Git = &Git{}
-	if err = addBranchMetadataForGit(g, m); err != nil {
+	if err = addBranchMetadataForGit(m.git, m); err != nil {
 		return err
 	}
-	if err = addRefMetadataForGit(g, m); err != nil {
+	if err = addRefMetadataForGit(m.git, m); err != nil {
 		return err
 	}
-	if err = addMessageMetadataForGit(g, m); err != nil {
+	if err = addMessageMetadataForGit(m.git, m); err != nil {
 		return err
 	}
-	if err = addStatusMetadataForGit(g, m); err != nil {
+	if err = addStatusMetadataForGit(m.git, m); err != nil {
 		return err
 	}
-	if err = addSHAMetadataForGit(g, m); err != nil {
+	if err = addSHAMetadataForGit(m.git, m); err != nil {
 		return err
 	}
-	if err = addTagMetadataForGit(g, m); err != nil {
+	if err = addTagMetadataForGit(m.git, m); err != nil {
 		return err
 	}
 
@@ -189,6 +186,7 @@ func addStatusMetadataForGit(g *git.Git, m *Metadata) error {
 	if err != nil {
 		return err
 	}
+
 	m.Git.Status = status
 	m.Git.IsClean = isClean
 
