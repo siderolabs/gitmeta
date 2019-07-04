@@ -2,6 +2,7 @@ package git
 
 import (
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 
@@ -126,22 +127,20 @@ func (g *Git) Tag() (tag string, isTag bool, err error) {
 
 // Status returns the status of the working tree.
 func (g *Git) Status() (status string, isClean bool, err error) {
-	worktree, err := g.repo.Worktree()
-	if err != nil {
-		return
-	}
-	worktreeStatus, err := worktree.Status()
-	if err != nil {
-		return
-	}
-	if worktreeStatus.IsClean() {
+	// temporary switch to calling out to git binary until issue with
+	// go-git slowness on Worktree.Status is resolved
+	// see: https://github.com/src-d/go-git/issues/844
+	_, err = exec.Command("git", "diff-index", "--quiet", "HEAD", "--").CombinedOutput()
+	if err == nil {
 		isClean = true
 		status = " nothing to commit, working tree clean"
-	} else {
-		status = worktreeStatus.String()
+	} else if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
+		var porcelainStatus []byte
+		porcelainStatus, err = exec.Command("git", "status", "--porcelain").Output()
+		status = string(porcelainStatus)
 	}
 
-	return status, isClean, err
+	return
 }
 
 // Message returns the commit message. In the case that a commit has multiple
