@@ -96,6 +96,7 @@ func addMetadataForVersion(m *Metadata) error {
 	return nil
 }
 
+//nolint: unparam
 func addMetadataForContainer(m *Metadata) error {
 	tag := m.Git.SHA
 
@@ -173,7 +174,7 @@ func addSHAMetadataForGit(g *git.Git, m *Metadata) error {
 	}
 
 	if !m.Git.IsClean {
-		sha = sha + "-dirty"
+		sha += "-dirty"
 	}
 
 	m.Git.SHA = sha
