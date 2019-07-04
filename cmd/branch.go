@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/cobra"
 	"github.com/talos-systems/gitmeta/pkg/git"
 	"github.com/talos-systems/gitmeta/pkg/metadata"
-	"github.com/spf13/cobra"
 )
 
 // branchCmd represents the branch command

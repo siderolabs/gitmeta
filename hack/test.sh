@@ -8,7 +8,7 @@ GOPACKAGES=$(go list ./...)
 lint_packages() {
   if [ "${lint}" = true ]; then
     echo "linting packages"
-    curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $GOPATH/bin v1.10.1
+    curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $GOPATH/bin v1.17.1
     golangci-lint run --config "${BASH_SOURCE%/*}/golangci-lint.yaml"
   fi
 }
@@ -28,8 +28,8 @@ go_test() {
 coverage_tests() {
   if [ "${coverage}" = true ]; then
     echo "performing coverage tests"
-    local coverage_report="../build/coverage.txt"
-    local profile="../build/profile.out"
+    local coverage_report=".coverage.txt"
+    local profile="profile.out"
     if [[ -f ${coverage_report} ]]; then
       rm ${coverage_report}
     fi

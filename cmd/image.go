@@ -7,7 +7,7 @@ import (
 // imageCmd represents the image command
 var imageCmd = &cobra.Command{
 	Use:   "image",
-	Short: "Retreive image metadata",
+	Short: "Retrieve image metadata",
 	Long:  ``,
 }
 

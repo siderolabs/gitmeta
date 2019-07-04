@@ -7,7 +7,7 @@ import (
 // gitCmd represents the git command
 var gitCmd = &cobra.Command{
 	Use:   "git",
-	Short: "Retreive git metadata",
+	Short: "Retrieve git metadata",
 	Long:  ``,
 }
 
