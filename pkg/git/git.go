@@ -130,13 +130,16 @@ func (g *Git) Status() (status string, isClean bool, err error) {
 	// temporary switch to calling out to git binary until issue with
 	// go-git slowness on Worktree.Status is resolved
 	// see: https://github.com/src-d/go-git/issues/844
-	_, err = exec.Command("git", "diff-index", "--quiet", "HEAD", "--").CombinedOutput()
-	if err == nil {
+	var porcelainStatus []byte
+	porcelainStatus, err = exec.Command("git", "status", "--porcelain").Output()
+	if err != nil {
+		return
+	}
+
+	if len(porcelainStatus) == 0 {
 		isClean = true
 		status = " nothing to commit, working tree clean"
-	} else if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
-		var porcelainStatus []byte
-		porcelainStatus, err = exec.Command("git", "status", "--porcelain").Output()
+	} else {
 		status = string(porcelainStatus)
 	}
 
