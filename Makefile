@@ -1,5 +1,5 @@
 REPO ?= docker.io/autonomy
-GOLANG_IMAGE ?= golang:1.12.6
+GOLANG_IMAGE ?= golang:1.13.1
 
 TAG := $(shell gitmeta image tag)
 

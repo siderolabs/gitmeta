@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"strings"
 
 	billy "gopkg.in/src-d/go-billy.v4"
 	"gopkg.in/src-d/go-billy.v4/memfs"
@@ -123,6 +124,26 @@ func (g *Git) Tag() (tag string, isTag bool, err error) {
 	}
 
 	return tag, isTag, err
+}
+
+// Describe returns git describe-based version.
+//
+//If no tags are present: `8513435-dirty` or `8513435`
+//
+// Exactly on the tag `v0.1`: `v0.1-dirty` or `v0.1`
+//
+// Some commits ahead of tag `v0.1`: `v0.1-1-g23cbce5` (1 commit ahead, `g`
+// followed by abbreviated git SHA).
+func (g *Git) Describe() (result string, err error) {
+	var describeResult []byte
+	describeResult, err = exec.Command("git", "describe", "--tags", "--always", "--dirty").Output()
+	if err != nil {
+		return
+	}
+
+	result = strings.TrimSpace(string(describeResult))
+
+	return
 }
 
 // Status returns the status of the working tree.
