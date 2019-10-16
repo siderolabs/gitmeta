@@ -36,6 +36,7 @@ type Git struct {
 	SHA      string
 	Tag      string
 	Status   string
+	Describe string
 	IsBranch bool
 	IsClean  bool
 	IsTag    bool
@@ -66,12 +67,6 @@ func NewMetadata(git *git.Git) (m *Metadata, err error) {
 		return nil, err
 	}
 
-	// Override the container image if the working tree is not dirty and the
-	// current commit is a tag.
-	if m.Git.IsClean && m.Git.IsTag {
-		m.Container.Image.Tag = m.Git.Tag
-	}
-
 	return m, nil
 }
 
@@ -98,7 +93,7 @@ func addMetadataForVersion(m *Metadata) error {
 
 //nolint: unparam
 func addMetadataForContainer(m *Metadata) error {
-	tag := m.Git.SHA
+	tag := m.Git.Describe
 
 	containerMetadata := &Container{
 		Image: &Image{
@@ -130,6 +125,9 @@ func addMetadataForGit(m *Metadata) (err error) {
 		return err
 	}
 	if err = addTagMetadataForGit(m.git, m); err != nil {
+		return err
+	}
+	if err = addDescribeMetadataForGit(m.git, m); err != nil {
 		return err
 	}
 
@@ -205,6 +203,16 @@ func addTagMetadataForGit(g *git.Git, m *Metadata) error {
 	} else {
 		m.Git.Tag = "none"
 	}
+
+	return nil
+}
+
+func addDescribeMetadataForGit(g *git.Git, m *Metadata) error {
+	describe, err := g.Describe()
+	if err != nil {
+		return err
+	}
+	m.Git.Describe = describe
 
 	return nil
 }

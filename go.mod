@@ -1,5 +1,7 @@
 module github.com/talos-systems/gitmeta
 
+go 1.13
+
 require (
 	github.com/Masterminds/semver v1.4.2
 	github.com/gliderlabs/ssh v0.2.2 // indirect
